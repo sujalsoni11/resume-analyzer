@@ -107,7 +107,7 @@ export default function Analyze() {
         const formData = new FormData()
         formData.append('resume', file)
         const uploadRes = await resumeAPI.upload(formData)
-        resumeId = uploadRes.data?.resume?._id || uploadRes.data?._id
+        resumeId = uploadRes.data?.resume?._id || uploadRes.data?.resume?.id || uploadRes.data?._id || uploadRes.data?.id
         setUploadingFile(false)
       }
 
