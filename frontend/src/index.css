@@ -1,0 +1,153 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #F2EFE4;
+    color: #0D3333;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .dark body {
+    background-color: #0A1A1A;
+    color: #F2EFE4;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-weight: 900;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+  }
+
+  input, textarea, select {
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer utilities {
+  /* Dot grid backgrounds */
+  .dot-grid {
+    background-image: radial-gradient(circle, rgba(13,51,51,0.2) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .dot-grid-dark {
+    background-image: radial-gradient(circle, rgba(200,255,0,0.15) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Text stroke effects (outlined text like reference image) */
+  .text-stroke {
+    -webkit-text-stroke: 3px #0D3333;
+    color: transparent;
+  }
+
+  .text-stroke-lime {
+    -webkit-text-stroke: 3px #C8FF00;
+    color: transparent;
+  }
+
+  .text-stroke-white {
+    -webkit-text-stroke: 2px white;
+    color: transparent;
+  }
+
+  .text-stroke-sm {
+    -webkit-text-stroke: 2px #0D3333;
+    color: transparent;
+  }
+
+  /* Neon lime glow */
+  .lime-glow {
+    box-shadow: 0 0 20px rgba(200, 255, 0, 0.3), 0 0 40px rgba(200, 255, 0, 0.1);
+  }
+
+  .lime-glow-lg {
+    box-shadow: 0 0 40px rgba(200, 255, 0, 0.5), 0 0 80px rgba(200, 255, 0, 0.2);
+  }
+
+  /* Card hover effects */
+  .card-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 6px 6px 0px #0D3333;
+  }
+
+  .card-hover-lime:hover {
+    transform: translateY(-4px);
+    box-shadow: 6px 6px 0px #C8FF00;
+  }
+
+  /* Sharp offset shadow */
+  .shadow-sharp {
+    box-shadow: 4px 4px 0px #0D3333;
+  }
+
+  .shadow-sharp-lime {
+    box-shadow: 4px 4px 0px #C8FF00;
+  }
+
+  .shadow-sharp-white {
+    box-shadow: 4px 4px 0px white;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #F2EFE4;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #0D3333;
+    border-radius: 0;
+  }
+  .dark ::-webkit-scrollbar-track {
+    background: #0A1A1A;
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    background: #C8FF00;
+  }
+
+  /* Progress bar base */
+  .progress-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: #C8FF00;
+    transition: width 1s ease;
+  }
+
+  /* Tag / badge no-radius */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 0;
+  }
+}
