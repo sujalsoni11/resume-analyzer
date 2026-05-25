@@ -130,7 +130,7 @@ export default function History({ bookmarksOnly = false }) {
       const res = bookmarksOnly
         ? await analysisAPI.getBookmarks()
         : await analysisAPI.getAll()
-      setAnalyses(res.data?.analyses || res.data || [])
+      setAnalyses(res.data?.analyses || res.data?.bookmarks || (Array.isArray(res.data) ? res.data : []))
     } catch {
       setAnalyses([])
     } finally {

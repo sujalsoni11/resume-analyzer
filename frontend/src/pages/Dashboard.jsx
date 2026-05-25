@@ -46,7 +46,7 @@ export default function Dashboard() {
     const fetchDashboard = async () => {
       try {
         const res = await analysisAPI.getDashboard()
-        setDashboard(res.data)
+        setDashboard(res.data?.stats || res.data)
       } catch {
         // Use mock data if API fails
         setDashboard({
@@ -126,7 +126,7 @@ export default function Dashboard() {
       {/* ── Chart + Quick Analyze ─────────────────────────── */}
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <ScoreHistory data={dashboard?.scoreHistory || []} />
+          <ScoreHistory data={dashboard?.atsScoreHistory || dashboard?.scoreHistory || []} />
         </div>
 
         {/* Quick Analyze CTA Card */}
