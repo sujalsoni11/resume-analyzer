@@ -27,27 +27,18 @@ const app = express();
 app.use(helmet());
 
 // ─── CORS Configuration ────────────────────────────────────────────────────────
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  'http://localhost:5173',
-  'http://localhost:3000',
-].filter(Boolean); // Remove any undefined values
-
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (mobile apps, Postman, curl)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      callback(new Error(`CORS policy: Origin ${origin} not allowed`));
+      // Allow all origins (echoing back) to support local dev and dynamic Vercel domains with credentials/cookies
+      callback(null, true);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
+
 
 // ─── HTTP Request Logger ───────────────────────────────────────────────────────
 if (process.env.NODE_ENV === 'development') {
