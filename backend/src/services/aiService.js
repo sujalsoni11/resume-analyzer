@@ -8,8 +8,8 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 // ─── Initialize Gemini Client ──────────────────────────────────────────────────
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Use Gemini 1.5 Flash for fast, cost-effective analysis
-const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+// Use Gemini 2.5 Flash for fast, cost-effective analysis
+const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
 // ─── Helper: Call Gemini API ───────────────────────────────────────────────────
 /**
