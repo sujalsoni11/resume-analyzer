@@ -24,6 +24,7 @@ const {
   getBookmarks,
   getDashboardStats,
   downloadReport,
+  deleteAnalysis,
 } = require('../controllers/analysisController');
 const { protect } = require('../middleware/auth');
 
@@ -42,5 +43,6 @@ router.get('/', getAnalyses);
 router.get('/:id', getAnalysis);
 router.patch('/:id/bookmark', toggleBookmark);
 router.get('/:id/download', downloadReport);
+router.delete('/:id', deleteAnalysis);
 
 module.exports = router;

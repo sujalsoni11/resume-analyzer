@@ -361,6 +361,52 @@ const downloadReport = async (req, res, next) => {
   }
 };
 
+// ─── DELETE /api/analysis/:id ──────────────────────────────────────────────────
+/**
+ * Delete a single analysis by ID.
+ * Validates ownership before deleting, and decrements user.totalAnalyses.
+ */
+const deleteAnalysis = async (req, res, next) => {
+  try {
+    const analysis = await Analysis.findById(req.params.id);
+
+    if (!analysis) {
+      return res.status(404).json({
+        success: false,
+        message: 'Analysis not found.',
+      });
+    }
+
+    // Verify ownership
+    if (analysis.userId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. This analysis does not belong to you.',
+      });
+    }
+
+    // Delete the analysis doc from DB
+    await Analysis.findByIdAndDelete(analysis._id);
+
+    // Decrement the user's total analysis count to keep statistics in sync
+    await User.findByIdAndUpdate(req.user._id, { $inc: { totalAnalyses: -1 } });
+
+    // Sync user bookmarks if deleted analysis was bookmarked
+    if (analysis.bookmarked) {
+      await User.findByIdAndUpdate(req.user._id, {
+        $pull: { bookmarks: analysis._id },
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Analysis deleted successfully.',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createAnalysis,
   getAnalyses,
@@ -369,4 +415,5 @@ module.exports = {
   getBookmarks,
   getDashboardStats,
   downloadReport,
+  deleteAnalysis,
 };
