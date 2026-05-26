@@ -29,7 +29,7 @@ export default function Register() {
     const initGoogle = () => {
       if (typeof google !== 'undefined') {
         google.accounts.id.initialize({
-          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || '1047648356262-6i54m9282v7h786lpt84p6e771k68c8c.apps.googleusercontent.com',
+          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || '923316002790-381bvv12k7ldgvsnr9k67p4g80l2igvq.apps.googleusercontent.com',
           callback: handleGoogleSuccess,
         })
         google.accounts.id.renderButton(
