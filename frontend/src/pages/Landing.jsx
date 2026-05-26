@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView } from 'framer-motion'
 import {
@@ -22,6 +22,47 @@ function FadeUp({ children, delay = 0, className = '' }) {
     >
       {children}
     </motion.div>
+  )
+}
+
+/* ─── Typewriter Effect Component ───────────────────────────── */
+function Typewriter({ words, speed = 80, delay = 2500 }) {
+  const [index, setIndex] = useState(0)
+  const [subIndex, setSubIndex] = useState(0)
+  const [reverse, setReverse] = useState(false)
+  const [blink, setBlink] = useState(true)
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setBlink((prev) => !prev)
+    }, 500)
+    return () => clearTimeout(timeout)
+  }, [blink])
+
+  useEffect(() => {
+    if (subIndex === words[index].length + 1 && !reverse) {
+      const timeout = setTimeout(() => setReverse(true), delay)
+      return () => clearTimeout(timeout)
+    }
+
+    if (subIndex === 0 && reverse) {
+      setReverse(false)
+      setIndex((prev) => (prev + 1) % words.length)
+      return
+    }
+
+    const timeout = setTimeout(() => {
+      setSubIndex((prev) => prev + (reverse ? -1 : 1))
+    }, speed + (reverse ? 30 : 0))
+
+    return () => clearTimeout(timeout)
+  }, [subIndex, index, reverse, words, speed, delay])
+
+  return (
+    <span className="font-display font-black tracking-widest text-lime text-xl md:text-2xl uppercase" style={{ color: '#C8FF00' }}>
+      {`${words[index].substring(0, subIndex)}`}
+      <span className={`${blink ? 'opacity-100' : 'opacity-0'} transition-opacity`} style={{ color: '#C8FF00' }}>|</span>
+    </span>
   )
 }
 
@@ -388,6 +429,121 @@ export default function Landing() {
                 </div>
               </FadeUp>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── MEET THE CREATOR ─────────────────────────────────── */}
+      <section className="py-24 dot-grid bg-cream dark:bg-teal-900 border-b-2 border-dark-teal/10 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            
+            {/* Left: Avatar with animations */}
+            <div className="lg:col-span-5 flex justify-center order-2 lg:order-1">
+              <div className="relative group">
+                {/* Decorative border boxes */}
+                <motion.div
+                  initial={{ rotate: 0 }}
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+                  className="absolute -inset-4 border-2 border-dashed border-lime/40 group-hover:border-lime/80 transition-colors"
+                />
+                
+                {/* Sharp neon lime background shadow */}
+                <div className="absolute inset-0 bg-dark-teal translate-x-3 translate-y-3 shadow-sharp-lime transition-transform group-hover:translate-x-1 group-hover:translate-y-1" />
+                
+                {/* Main Avatar Container */}
+                <div className="relative border-4 border-dark-teal dark:border-cream bg-dark-teal overflow-hidden aspect-square w-72 md:w-80 lg:w-96 shadow-2xl">
+                  <motion.img
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.4 }}
+                    src="/sujal_soni_avatar.png"
+                    alt="Sujal Soni - Creator"
+                    className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 transition-all duration-500"
+                  />
+                  
+                  {/* Futuristic overlay elements */}
+                  <div className="absolute top-4 left-4 bg-lime text-dark-teal px-3 py-1 font-display font-black text-xs uppercase tracking-widest">
+                    SYS.ADMIN
+                  </div>
+                  <div className="absolute bottom-4 right-4 bg-dark-teal border border-lime/50 text-cream px-3 py-1 font-mono text-[10px] tracking-wider uppercase">
+                    LOC: DEL, IN
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Info and Text Details */}
+            <div className="lg:col-span-7 order-1 lg:order-2">
+              <FadeUp>
+                <div className="mb-6">
+                  <span className="font-display text-xs font-black uppercase tracking-[0.3em] text-lime bg-dark-teal px-4 py-2 inline-block mb-6">
+                    THE CREATOR
+                  </span>
+                  
+                  {/* Dynamic typewriter typo effect */}
+                  <div className="h-8 mb-2 flex items-center">
+                    <Typewriter 
+                      words={['Full-Stack Developer', 'AI Solutions Architect', 'Creator of ResumeAI']} 
+                      speed={80} 
+                      delay={2500} 
+                    />
+                  </div>
+                  
+                  <h2
+                    className="font-display font-black text-dark-teal dark:text-cream uppercase leading-none mb-6"
+                    style={{ fontSize: 'clamp(56px, 8vw, 96px)' }}
+                  >
+                    SUJAL SONI
+                  </h2>
+                </div>
+              </FadeUp>
+
+              <FadeUp delay={0.15}>
+                <p className="text-dark-teal/80 dark:text-cream/80 text-base md:text-lg mb-8 leading-relaxed font-medium">
+                  A visionary developer committed to engineered excellence. ResumeAI was conceived to push the limits of modern full-stack systems and artificial intelligence, offering job seekers a competitive edge with high-fidelity, real-time ATS optimization.
+                </p>
+              </FadeUp>
+
+              {/* Technologies / Specialities Grid */}
+              <FadeUp delay={0.25}>
+                <div className="mb-10">
+                  <p className="text-xs font-bold text-dark-teal/50 dark:text-cream/40 uppercase tracking-[0.2em] mb-4">
+                    SPECIALITIES & TECH STACK
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      'React.js', 'Node.js', 'Express.js', 'MongoDB', 
+                      'Google Gemini AI', 'Tailwind CSS', 'Vite', 'Framer Motion'
+                    ].map(tech => (
+                      <span 
+                        key={tech} 
+                        className="text-xs font-bold px-3 py-1.5 uppercase border-2 border-dark-teal text-dark-teal dark:text-cream dark:border-cream hover:bg-dark-teal hover:text-cream dark:hover:bg-cream dark:hover:text-dark-teal transition-all duration-300"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </FadeUp>
+
+              {/* Action/Social Links */}
+              <FadeUp delay={0.35}>
+                <div className="flex flex-wrap gap-4">
+                  <a
+                    href="https://github.com/sujalsoni11"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-8 py-3.5 font-display font-black text-sm uppercase tracking-widest text-dark-teal transition-all hover:bg-lime-dark active:scale-95 shadow-sharp-lime"
+                    style={{ background: '#C8FF00' }}
+                  >
+                    GITHUB PORTFOLIO
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
+                </div>
+              </FadeUp>
+            </div>
+            
           </div>
         </div>
       </section>
