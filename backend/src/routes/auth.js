@@ -64,7 +64,7 @@ const loginValidation = [
 // Public routes
 router.post('/register', registerValidation, register);
 router.post('/login', loginValidation, login);
-router.post('/google', googleLogin);
+router.post('/google', googleLogin); // Google OAuth login/register
 
 // Protected routes — require a valid JWT
 router.get('/me', protect, getMe);
