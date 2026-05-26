@@ -270,10 +270,112 @@ const changePassword = async (req, res, next) => {
   }
 };
 
+// ─── POST /api/auth/google ─────────────────────────────────────────────────────
+/**
+ * Authenticate or register a user using their Google ID token.
+ */
+const googleLogin = async (req, res, next) => {
+  try {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Google ID token is required.',
+      });
+    }
+
+    // Verify token using Google's tokeninfo API
+    const response = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${token}`);
+    
+    if (!response.ok) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid Google authentication token.',
+      });
+    }
+
+    const payload = await response.json();
+
+    // Verify audience to prevent cross-app token reuse
+    const expectedClientId = process.env.GOOGLE_CLIENT_ID;
+    if (expectedClientId && payload.aud !== expectedClientId) {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. Audience mismatch.',
+      });
+    }
+
+    // Ensure email is verified by Google
+    if (!payload.email_verified) {
+      return res.status(403).json({
+        success: false,
+        message: 'Your Google email is not verified.',
+      });
+    }
+
+    const email = payload.email.toLowerCase().trim();
+    const name = payload.name;
+    const avatar = payload.picture || '';
+    const googleId = payload.sub; // unique Google User ID
+
+    // Find user by googleId or email
+    let user = await User.findOne({
+      $or: [{ googleId }, { email }],
+    });
+
+    if (user) {
+      // If user exists but googleId isn't linked yet, link it
+      let isUpdated = false;
+      if (!user.googleId) {
+        user.googleId = googleId;
+        isUpdated = true;
+      }
+      // Keep avatar fresh if Google has one and local is empty
+      if (avatar && !user.avatar) {
+        user.avatar = avatar;
+        isUpdated = true;
+      }
+      if (isUpdated) {
+        await user.save();
+      }
+    } else {
+      // Create new user (password is not required since googleId is provided)
+      user = await User.create({
+        name,
+        email,
+        avatar,
+        googleId,
+      });
+    }
+
+    // Generate JWT token
+    const localToken = generateToken(user._id);
+
+    res.status(200).json({
+      success: true,
+      message: 'Authenticated successfully with Google.',
+      token: localToken,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        plan: user.plan,
+        totalAnalyses: user.totalAnalyses,
+        avatar: user.avatar,
+        createdAt: user.createdAt,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
   getMe,
   updateProfile,
   changePassword,
+  googleLogin,
 };

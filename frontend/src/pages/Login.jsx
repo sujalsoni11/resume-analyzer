@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react'
@@ -11,8 +11,53 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { login } = useAuth()
+  const { login, loginWithGoogle } = useAuth()
   const navigate = useNavigate()
+
+  const handleGoogleSuccess = async (response) => {
+    setError('')
+    setLoading(true)
+    try {
+      await loginWithGoogle(response.credential)
+      navigate('/dashboard')
+    } catch (err) {
+      setError(err.response?.data?.message || 'Google authentication failed.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    const initGoogle = () => {
+      if (typeof google !== 'undefined') {
+        google.accounts.id.initialize({
+          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || '1047648356262-6i54m9282v7h786lpt84p6e771k68c8c.apps.googleusercontent.com',
+          callback: handleGoogleSuccess,
+        })
+        google.accounts.id.renderButton(
+          document.getElementById('googleLoginBtn'),
+          {
+            theme: 'filled_black',
+            size: 'large',
+            width: '380',
+            text: 'continue_with',
+            shape: 'square',
+          }
+        )
+      }
+    }
+
+    initGoogle()
+
+    const interval = setInterval(() => {
+      if (typeof google !== 'undefined') {
+        initGoogle()
+        clearInterval(interval)
+      }
+    }, 500)
+
+    return () => clearInterval(interval)
+  }, [loginWithGoogle])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -193,6 +238,18 @@ export default function Login() {
                 )}
               </button>
             </form>
+
+            {/* Google Divider */}
+            <div className="relative flex py-4 items-center">
+              <div className="flex-grow border-t border-dark-teal/10 dark:border-cream/10"></div>
+              <span className="flex-shrink mx-4 text-dark-teal/40 dark:text-cream/40 text-xs font-bold uppercase tracking-widest">or</span>
+              <div className="flex-grow border-t border-dark-teal/10 dark:border-cream/10"></div>
+            </div>
+
+            {/* Google Login Button */}
+            <div className="flex justify-center w-full">
+              <div id="googleLoginBtn" className="w-full max-w-[380px] shadow-sharp-lime transition-all duration-300"></div>
+            </div>
 
             <p className="text-center text-dark-teal/40 dark:text-cream/30 text-xs mt-8 uppercase tracking-widest">
               By signing in, you agree to our Terms of Service

@@ -17,6 +17,7 @@ const {
   getMe,
   updateProfile,
   changePassword,
+  googleLogin,
 } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 
@@ -63,6 +64,7 @@ const loginValidation = [
 // Public routes
 router.post('/register', registerValidation, register);
 router.post('/login', loginValidation, login);
+router.post('/google', googleLogin);
 
 // Protected routes — require a valid JWT
 router.get('/me', protect, getMe);

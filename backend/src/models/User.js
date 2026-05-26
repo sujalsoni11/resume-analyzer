@@ -28,9 +28,19 @@ const userSchema = new mongoose.Schema({
   // Hashed password — excluded from queries by default (select: false)
   password: {
     type: String,
-    required: [true, 'Password is required'],
+    required: function() {
+      // Password is required only if googleId is not present
+      return !this.googleId;
+    },
     minlength: [6, 'Password must be at least 6 characters'],
     select: false,
+  },
+
+  // Google OAuth unique identifier (sparse to allow multiple null/undefined values)
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
   },
 
   // Optional avatar/profile picture URL
