@@ -457,7 +457,7 @@ export default function Landing() {
                   <motion.img
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.4 }}
-                    src="/sujal_soni_avatar.png"
+                    src="/sujal_soni_avatar.jpg"
                     alt="Sujal Soni - Creator"
                     className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 transition-all duration-500"
                   />
