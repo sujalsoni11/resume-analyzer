@@ -434,40 +434,37 @@ export default function Landing() {
       </section>
 
       {/* ── MEET THE CREATOR ─────────────────────────────────── */}
-      <section className="py-24 dot-grid bg-cream dark:bg-teal-900 border-b-2 border-dark-teal/10 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      <section className="py-16 dot-grid bg-cream dark:bg-teal-900 border-b-2 border-dark-teal/10 overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
             {/* Left: Avatar with animations */}
             <div className="lg:col-span-5 flex justify-center order-2 lg:order-1">
               <div className="relative group">
-                {/* Decorative border boxes */}
+                {/* Decorative rotating border box */}
                 <motion.div
                   initial={{ rotate: 0 }}
                   animate={{ rotate: 360 }}
                   transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-                  className="absolute -inset-4 border-2 border-dashed border-lime/40 group-hover:border-lime/80 transition-colors"
+                  className="absolute -inset-3 border-2 border-dashed border-lime/40 group-hover:border-lime/80 rounded-full transition-colors"
                 />
                 
                 {/* Sharp neon lime background shadow */}
-                <div className="absolute inset-0 bg-dark-teal translate-x-3 translate-y-3 shadow-sharp-lime transition-transform group-hover:translate-x-1 group-hover:translate-y-1" />
+                <div className="absolute inset-0 bg-dark-teal translate-x-2 translate-y-2 rounded-full shadow-sharp-lime transition-transform group-hover:translate-x-1 group-hover:translate-y-1" />
                 
                 {/* Main Avatar Container */}
-                <div className="relative border-4 border-dark-teal dark:border-cream bg-dark-teal overflow-hidden aspect-square w-72 md:w-80 lg:w-96 shadow-2xl">
+                <div className="relative border-4 border-dark-teal dark:border-cream bg-dark-teal rounded-full overflow-hidden w-60 h-60 md:w-64 md:h-64 shadow-2xl">
                   <motion.img
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.4 }}
-                    src="/sujal_soni_avatar.jpg"
+                    src="/sujal_soni_avatar.png"
                     alt="Sujal Soni - Creator"
-                    className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 transition-all duration-500"
+                    className="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 transition-all duration-500 rounded-full"
                   />
                   
-                  {/* Futuristic overlay elements */}
-                  <div className="absolute top-4 left-4 bg-lime text-dark-teal px-3 py-1 font-display font-black text-xs uppercase tracking-widest">
+                  {/* Futuristic overlay badge */}
+                  <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-lime text-dark-teal px-2 py-0.5 font-display font-black text-[10px] uppercase tracking-widest rounded-sm">
                     SYS.ADMIN
-                  </div>
-                  <div className="absolute bottom-4 right-4 bg-dark-teal border border-lime/50 text-cream px-3 py-1 font-mono text-[10px] tracking-wider uppercase">
-                    LOC: DEL, IN
                   </div>
                 </div>
               </div>
@@ -476,13 +473,13 @@ export default function Landing() {
             {/* Right: Info and Text Details */}
             <div className="lg:col-span-7 order-1 lg:order-2">
               <FadeUp>
-                <div className="mb-6">
-                  <span className="font-display text-xs font-black uppercase tracking-[0.3em] text-lime bg-dark-teal px-4 py-2 inline-block mb-6">
+                <div className="mb-4">
+                  <span className="font-display text-[10px] font-black uppercase tracking-[0.3em] text-lime bg-dark-teal px-3 py-1 inline-block mb-3">
                     THE CREATOR
                   </span>
                   
                   {/* Dynamic typewriter typo effect */}
-                  <div className="h-8 mb-2 flex items-center">
+                  <div className="h-6 mb-1 flex items-center">
                     <Typewriter 
                       words={['Full-Stack Developer', 'AI Solutions Architect', 'Creator of ResumeAI']} 
                       speed={80} 
@@ -491,8 +488,8 @@ export default function Landing() {
                   </div>
                   
                   <h2
-                    className="font-display font-black text-dark-teal dark:text-cream uppercase leading-none mb-6"
-                    style={{ fontSize: 'clamp(56px, 8vw, 96px)' }}
+                    className="font-display font-black text-dark-teal dark:text-cream uppercase leading-none mb-3"
+                    style={{ fontSize: 'clamp(40px, 6vw, 64px)' }}
                   >
                     SUJAL SONI
                   </h2>
@@ -500,25 +497,25 @@ export default function Landing() {
               </FadeUp>
 
               <FadeUp delay={0.15}>
-                <p className="text-dark-teal/80 dark:text-cream/80 text-base md:text-lg mb-8 leading-relaxed font-medium">
+                <p className="text-dark-teal/80 dark:text-cream/80 text-sm md:text-base mb-6 leading-relaxed font-medium">
                   A visionary developer committed to engineered excellence. ResumeAI was conceived to push the limits of modern full-stack systems and artificial intelligence, offering job seekers a competitive edge with high-fidelity, real-time ATS optimization.
                 </p>
               </FadeUp>
 
               {/* Technologies / Specialities Grid */}
               <FadeUp delay={0.25}>
-                <div className="mb-10">
-                  <p className="text-xs font-bold text-dark-teal/50 dark:text-cream/40 uppercase tracking-[0.2em] mb-4">
+                <div className="mb-6">
+                  <p className="text-[10px] font-bold text-dark-teal/50 dark:text-cream/40 uppercase tracking-[0.2em] mb-2.5">
                     SPECIALITIES & TECH STACK
                   </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5">
                     {[
                       'React.js', 'Node.js', 'Express.js', 'MongoDB', 
                       'Google Gemini AI', 'Tailwind CSS', 'Vite', 'Framer Motion'
                     ].map(tech => (
                       <span 
                         key={tech} 
-                        className="text-xs font-bold px-3 py-1.5 uppercase border-2 border-dark-teal text-dark-teal dark:text-cream dark:border-cream hover:bg-dark-teal hover:text-cream dark:hover:bg-cream dark:hover:text-dark-teal transition-all duration-300"
+                        className="text-[10px] font-bold px-2.5 py-1 uppercase border border-dark-teal text-dark-teal dark:text-cream dark:border-cream hover:bg-dark-teal hover:text-cream dark:hover:bg-cream dark:hover:text-dark-teal transition-all duration-300"
                       >
                         {tech}
                       </span>
@@ -534,11 +531,11 @@ export default function Landing() {
                     href="https://github.com/sujalsoni11"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-8 py-3.5 font-display font-black text-sm uppercase tracking-widest text-dark-teal transition-all hover:bg-lime-dark active:scale-95 shadow-sharp-lime"
+                    className="inline-flex items-center gap-2 px-6 py-2.5 font-display font-black text-xs uppercase tracking-widest text-dark-teal transition-all hover:bg-lime-dark active:scale-95 shadow-sharp-lime"
                     style={{ background: '#C8FF00' }}
                   >
                     GITHUB PORTFOLIO
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </a>
                 </div>
               </FadeUp>
