@@ -463,9 +463,9 @@ export default function Landing() {
                   />
                   
                   {/* Futuristic overlay badge */}
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-lime text-dark-teal px-2 py-0.5 font-display font-black text-[10px] uppercase tracking-widest rounded-sm">
+                  {/* <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-lime text-dark-teal px-2 py-0.5 font-display font-black text-[10px] uppercase tracking-widest rounded-sm">
                     SYS.ADMIN
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
