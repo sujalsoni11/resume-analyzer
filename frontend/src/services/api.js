@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'https://resume-analyzer-backend-git-main-sujalsoni11s-projects.vercel.app/api'
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://resume-analyzer-backend-ashen.vercel.app/api'
 
 const api = axios.create({
   baseURL: BASE_URL,
