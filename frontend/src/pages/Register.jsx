@@ -166,7 +166,7 @@ export default function Register() {
                   type="text"
                   value={form.name}
                   onChange={handleChange}
-                  placeholder="John Smith"
+                  placeholder="Sujal Soni"
                   className={inputClass}
                 />
               </div>
@@ -178,7 +178,7 @@ export default function Register() {
                   type="email"
                   value={form.email}
                   onChange={handleChange}
-                  placeholder="you@example.com"
+                  placeholder="xyz@gmail.com"
                   className={inputClass}
                 />
               </div>
