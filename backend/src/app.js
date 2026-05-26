@@ -96,6 +96,11 @@ app.use(async (req, res, next) => {
   }
 });
 
+// ─── Version Endpoint ──────────────────────────────────────────────────────────
+app.get('/version', (req, res) => {
+  res.status(200).json({ version: 'v2-google-auth', deployedAt: '2026-05-26' });
+});
+
 // ─── Health Check Endpoint ─────────────────────────────────────────────────────
 app.get('/health', (req, res) => {
   res.status(200).json({
