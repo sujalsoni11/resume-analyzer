@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Download, Bookmark, BookmarkCheck, ArrowLeft, FileText,
   ChevronRight, Copy, CheckCheck, Lightbulb, Target, Brain,
-  MessageSquare, Map, BarChart2, AlertTriangle
+  MessageSquare, Map, BarChart2, AlertTriangle, Building2, ExternalLink
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { analysisAPI } from '../services/api.js'
@@ -82,7 +82,94 @@ const TABS = [
   { id: 'interview', label: 'Interview', icon: MessageSquare },
   { id: 'coverletter', label: 'Cover Letter', icon: FileText },
   { id: 'roadmap', label: 'Roadmap', icon: Map },
+  { id: 'companies', label: 'Companies', icon: Building2 },
 ]
+
+/* ─── Tier Badge Styles ──────────────────────────────────── */
+const TIER_STYLES = {
+  'Top Tier': { bg: 'bg-yellow-400/15', text: 'text-yellow-300', border: 'border-yellow-400/30' },
+  'Mid Tier': { bg: 'bg-blue-400/15',   text: 'text-blue-300',   border: 'border-blue-400/30'   },
+  'Startup':  { bg: 'bg-emerald-400/15',text: 'text-emerald-300',border: 'border-emerald-400/30'},
+}
+
+/* ─── Company Card ───────────────────────────────────────── */
+function CompanyCard({ company, index }) {
+  const [logoErr, setLogoErr] = React.useState(false)
+  const tier = TIER_STYLES[company.tier] || TIER_STYLES['Startup']
+  const scoreColor = company.matchScore >= 75 ? '#C8FF00' : company.matchScore >= 50 ? '#FCD34D' : '#F87171'
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: index * 0.06 }}
+      className="group bg-dark-teal border-2 border-dark-teal p-5 flex flex-col gap-4 hover:border-lime/40 transition-all duration-300"
+      style={{ boxShadow: 'none' }}
+      onMouseEnter={e => e.currentTarget.style.boxShadow = '0 0 24px rgba(200,255,0,0.08)'}
+      onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}
+    >
+      {/* ── Logo + Name ── */}
+      <div className="flex items-center gap-3">
+        <div className="w-11 h-11 bg-white/10 border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
+          {!logoErr ? (
+            <img
+              src={`https://logo.clearbit.com/${company.domain}`}
+              alt={company.name}
+              className="w-8 h-8 object-contain"
+              onError={() => setLogoErr(true)}
+            />
+          ) : (
+            <Building2 className="w-5 h-5 text-cream/40" />
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-display font-black text-cream text-sm uppercase leading-tight truncate">{company.name}</p>
+          <span className={`inline-block mt-1 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest border ${tier.bg} ${tier.text} ${tier.border}`}>
+            {company.tier}
+          </span>
+        </div>
+        <div className="text-right shrink-0">
+          <p className="font-display font-black text-2xl leading-none" style={{ color: scoreColor }}>{company.matchScore}</p>
+          <p className="text-cream/40 text-[10px] uppercase tracking-wider mt-0.5">Match</p>
+        </div>
+      </div>
+
+      {/* ── Match Bar ── */}
+      <div className="h-1 bg-white/10 w-full">
+        <motion.div
+          className="h-full"
+          initial={{ width: 0 }}
+          animate={{ width: `${company.matchScore}%` }}
+          transition={{ duration: 0.8, ease: 'easeOut', delay: index * 0.06 + 0.2 }}
+          style={{ background: scoreColor }}
+        />
+      </div>
+
+      {/* ── Reason ── */}
+      <p className="text-cream/60 text-xs leading-relaxed">{company.reason}</p>
+
+      {/* ── Roles ── */}
+      <div className="flex flex-wrap gap-1.5">
+        {(company.roles || []).map(role => (
+          <span key={role} className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide border border-white/10 text-cream/50">
+            {role}
+          </span>
+        ))}
+      </div>
+
+      {/* ── Apply Button ── */}
+      <a
+        href={company.applyUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center justify-center gap-2 py-2.5 font-display font-black text-xs uppercase tracking-widest text-dark-teal transition-all hover:bg-lime-dark mt-auto"
+        style={{ background: '#C8FF00' }}
+      >
+        Apply Now <ExternalLink className="w-3.5 h-3.5" />
+      </a>
+    </motion.div>
+  )
+}
 
 /* ─── Mock fallback data ─────────────────────────────────── */
 const MOCK = {
@@ -91,6 +178,14 @@ const MOCK = {
   resume: { originalName: 'My_Resume.pdf' },
   createdAt: new Date().toISOString(),
   isBookmarked: false,
+  companySuggestions: [
+    { name: 'Stripe', domain: 'stripe.com', matchScore: 88, tier: 'Top Tier', reason: 'Your React and Node.js skills align perfectly with Stripe\'s frontend-heavy stack. Their engineering blog highlights similar tech choices.', roles: ['Frontend Engineer', 'Software Engineer'], applyUrl: 'https://stripe.com/jobs/search?q=software+engineer' },
+    { name: 'Atlassian', domain: 'atlassian.com', matchScore: 82, tier: 'Mid Tier', reason: 'Atlassian\'s products heavily use React and TypeScript, matching your core stack. They value strong collaborative culture which your experience reflects.', roles: ['Software Engineer', 'Frontend Developer'], applyUrl: 'https://www.atlassian.com/company/careers/all-jobs' },
+    { name: 'Shopify', domain: 'shopify.com', matchScore: 79, tier: 'Mid Tier', reason: 'Shopify values full-stack developers and your Node.js/REST API background is directly relevant to their commerce platform.', roles: ['Frontend Developer', 'Full-Stack Engineer'], applyUrl: 'https://www.shopify.com/careers/search' },
+    { name: 'Linear', domain: 'linear.app', matchScore: 75, tier: 'Startup', reason: 'A high-growth startup known for exceptional engineering culture, your React expertise makes you a strong candidate for their small, impactful team.', roles: ['Software Engineer'], applyUrl: 'https://linear.app/careers' },
+    { name: 'Vercel', domain: 'vercel.com', matchScore: 72, tier: 'Mid Tier', reason: 'Your frontend experience and familiarity with modern web tooling align with Vercel\'s infrastructure and DX-focused engineering teams.', roles: ['Software Engineer', 'Frontend Engineer'], applyUrl: 'https://vercel.com/careers' },
+    { name: 'Notion', domain: 'notion.so', matchScore: 68, tier: 'Mid Tier', reason: 'Notion\'s editor and collaboration features are React-heavy — your background is a natural fit for their product engineering team.', roles: ['Software Engineer'], applyUrl: 'https://www.notion.so/careers' },
+  ],
   sectionScores: {
     experience: 85,
     education: 80,
@@ -494,6 +589,30 @@ export default function Results() {
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* COMPANIES */}
+          {activeTab === 'companies' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <p className="text-dark-teal/60 dark:text-cream/60 text-sm">
+                  {(data.companySuggestions || MOCK.companySuggestions).length} companies matched to your profile — ranked by fit score.
+                </p>
+                <div className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest">
+                  {['Top Tier', 'Mid Tier', 'Startup'].map(t => (
+                    <span key={t} className={`px-2 py-0.5 border ${TIER_STYLES[t].bg} ${TIER_STYLES[t].text} ${TIER_STYLES[t].border}`}>{t}</span>
+                  ))}
+                </div>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {(data.companySuggestions || MOCK.companySuggestions)
+                  .slice()
+                  .sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0))
+                  .map((company, i) => (
+                    <CompanyCard key={company.name + i} company={company} index={i} />
+                  ))}
+              </div>
             </div>
           )}
         </motion.div>

@@ -83,6 +83,7 @@ const createAnalysis = async (req, res, next) => {
       careerRoadmap: aiResult.careerRoadmap,
       jobMatch: aiResult.jobMatch,
       grammarScore: aiResult.grammarScore,
+      companySuggestions: aiResult.companySuggestions || [],
     });
 
     // Increment the user's total analysis count

@@ -89,6 +89,7 @@ IMPORTANT RULES:
 8. coverLetter must be a complete, professional, ready-to-use cover letter (minimum 3 paragraphs).
 9. careerRoadmap must have 6 entries covering a 6-month plan.
 10. All string arrays must contain real, relevant items — no empty arrays for found skills if skills exist in the resume.
+11. companySuggestions must include exactly 8-10 real companies. Use the candidate's actual skills, experience level, and atsScore to determine which tier of companies they can realistically target. Provide working careers page URLs and real company domain names for logos.
 
 JSON STRUCTURE TO RETURN:
 {
@@ -153,8 +154,26 @@ JSON STRUCTURE TO RETURN:
     "score": <integer 0-100, overall match between this candidate and ${jobRole}>,
     "reasoning": "<2-3 sentence explanation of why this score was given, citing specific strengths and gaps>"
   },
-  "grammarScore": <integer 0-100, quality of writing, grammar, spelling, and professional tone>
+  "grammarScore": <integer 0-100, quality of writing, grammar, spelling, and professional tone>,
+  "companySuggestions": [
+    {
+      "name": "<Real company name e.g. Google, Stripe, Notion>",
+      "domain": "<company's primary domain for logo e.g. google.com, stripe.com, notion.so>",
+      "matchScore": <integer 0-100, how well this candidate matches this company's typical hiring bar>,
+      "reason": "<1-2 sentence explanation of WHY this company is a good fit based on the resume's actual skills and experience>",
+      "roles": ["<specific job title this candidate should apply for at this company>", "<optional second role>"],
+      "applyUrl": "<direct URL to the company's careers page or job listings page, pre-filtered for the role if possible. Must be a real, working URL>",
+      "tier": "<exactly one of: Top Tier | Mid Tier | Startup>"
+    }
+  ]
 }
+
+Tier classification rules for companySuggestions:
+- "Top Tier": FAANG+, top unicorns (Google, Apple, Meta, Amazon, Microsoft, Netflix, Stripe, Airbnb, Uber, etc.)
+- "Mid Tier": Well-funded scaleups, established tech companies (Atlassian, HubSpot, Shopify, Twilio, Datadog, etc.)
+- "Startup": Promising early-stage or Series A/B companies in the candidate's domain
+
+Select companies that genuinely match the candidate's skills and experience. If atsScore < 50, bias towards Startup/Mid Tier. If atsScore >= 75, include Top Tier options. Always include a mix of tiers. Order companySuggestions by matchScore descending.
 `;
 
   // Call the Gemini API with the comprehensive prompt

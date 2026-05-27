@@ -125,6 +125,19 @@ const analysisSchema = new mongoose.Schema({
     type: Number,
   },
 
+  // AI-suggested companies the candidate could realistically target
+  companySuggestions: [
+    {
+      name: String,       // Company name e.g. "Google"
+      domain: String,     // Domain for Clearbit logo e.g. "google.com"
+      matchScore: Number, // 0-100, how well the candidate fits this company
+      reason: String,     // Why this company is a good fit
+      roles: [String],    // Specific roles to apply for
+      applyUrl: String,   // Direct URL to careers/jobs page
+      tier: String,       // "Top Tier" | "Mid Tier" | "Startup"
+    },
+  ],
+
   // Whether the user has bookmarked this analysis
   bookmarked: {
     type: Boolean,
