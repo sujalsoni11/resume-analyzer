@@ -1,6 +1,6 @@
 /**
  * aiService.js - Google Gemini AI Integration Service
- * Generates comprehensive resume analysis using the Gemini 1.5 Flash model
+ * Generates comprehensive resume analysis using the Gemini 2.0 Flash model
  */
 
 const { GoogleGenerativeAI } = require('@google/generative-ai');
@@ -8,10 +8,11 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 // ─── Initialize Gemini Client ──────────────────────────────────────────────────
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// gemini-1.5-flash on the stable v1 endpoint — free-tier friendly (15 RPM, 1M tokens/day)
+// gemini-2.0-flash on the v1beta endpoint — free-tier friendly (15 RPM, 1M tokens/day)
+// Note: gemini-1.5-flash was removed from the stable v1 endpoint; use v1beta with 2.0-flash
 const model = genAI.getGenerativeModel(
-  { model: 'gemini-1.5-flash' },
-  { apiVersion: 'v1' }
+  { model: 'gemini-2.0-flash' },
+  { apiVersion: 'v1beta' }
 );
 
 // ─── Helper: Sleep ─────────────────────────────────────────────────────────────
