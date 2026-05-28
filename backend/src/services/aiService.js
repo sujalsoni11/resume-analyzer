@@ -8,23 +8,52 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 // ─── Initialize Gemini Client ──────────────────────────────────────────────────
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Use Gemini 2.0 Flash — current stable model, available on free-tier API keys
-const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+// gemini-1.5-flash on the stable v1 endpoint — free-tier friendly (15 RPM, 1M tokens/day)
+const model = genAI.getGenerativeModel(
+  { model: 'gemini-1.5-flash' },
+  { apiVersion: 'v1' }
+);
 
-// ─── Helper: Call Gemini API ───────────────────────────────────────────────────
+// ─── Helper: Sleep ─────────────────────────────────────────────────────────────
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// ─── Helper: Call Gemini API with Retry ───────────────────────────────────────
 /**
  * Send a prompt to the Gemini model and return the raw text response.
+ * Retries up to 3 times with exponential backoff on 429 / 503 errors.
  * @param {string} prompt - The full prompt text to send
  * @returns {Promise<string>} Raw text response from Gemini
  */
 const callGemini = async (prompt) => {
-  try {
-    const result = await model.generateContent(prompt);
-    const response = result.response;
-    return response.text();
-  } catch (error) {
-    console.error('Gemini API call failed:', error.message);
-    throw new Error(`AI service error: ${error.message}`);
+  const MAX_RETRIES = 3;
+  const BASE_DELAY_MS = 8000; // 8 seconds initial backoff
+
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const result = await model.generateContent(prompt);
+      return result.response.text();
+    } catch (error) {
+      const msg = error.message || '';
+      const isRateLimit = msg.includes('429') || msg.includes('Too Many Requests');
+      const isServerError = msg.includes('503') || msg.includes('Service Unavailable');
+
+      if ((isRateLimit || isServerError) && attempt < MAX_RETRIES) {
+        const delay = BASE_DELAY_MS * attempt; // 8s, 16s, 24s
+        console.warn(`Gemini API attempt ${attempt} failed (rate limit). Retrying in ${delay / 1000}s...`);
+        await sleep(delay);
+        continue;
+      }
+
+      // If it's a quota/rate-limit error on the final attempt, give a clean message
+      if (isRateLimit) {
+        throw new Error(
+          'AI quota limit reached. The free-tier Gemini API allows 15 requests per minute. Please wait a minute and try again.'
+        );
+      }
+
+      console.error('Gemini API call failed:', msg);
+      throw new Error(`AI service error: ${msg}`);
+    }
   }
 };
 
