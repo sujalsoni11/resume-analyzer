@@ -8,8 +8,8 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 // ─── Initialize Gemini Client ──────────────────────────────────────────────────
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Use Gemini 2.5 Flash for fast, cost-effective analysis
-const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+// Use Gemini 1.5 Flash — stable, fast, and available on free-tier API keys
+const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
 // ─── Helper: Call Gemini API ───────────────────────────────────────────────────
 /**
@@ -37,16 +37,23 @@ const callGemini = async (prompt) => {
  */
 const parseJSON = (text) => {
   try {
-    // Remove ```json and ``` fences if present
+    // Strategy 1: Strip markdown fences anywhere in the string, then parse
     let cleaned = text
-      .replace(/^```json\s*/i, '')
-      .replace(/^```\s*/i, '')
-      .replace(/```\s*$/i, '')
+      .replace(/```json\s*/gi, '')
+      .replace(/```\s*/gi, '')
       .trim();
+
+    // Strategy 2: Extract the outermost JSON object { ... }
+    // Handles cases where Gemini adds preamble text or thinking output before/after the JSON
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace = cleaned.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      cleaned = cleaned.substring(firstBrace, lastBrace + 1);
+    }
 
     return JSON.parse(cleaned);
   } catch (error) {
-    console.error('JSON parse error. Raw response:', text.substring(0, 500));
+    console.error('JSON parse error. Raw response:', text.substring(0, 800));
     throw new Error('Failed to parse AI response as JSON. The AI returned an unexpected format.');
   }
 };
