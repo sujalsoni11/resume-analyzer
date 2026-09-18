@@ -11,7 +11,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 // gemini-2.0-flash on the v1beta endpoint — free-tier friendly (15 RPM, 1M tokens/day)
 // Note: gemini-1.5-flash was removed from the stable v1 endpoint; use v1beta with 2.0-flash
 const model = genAI.getGenerativeModel(
-  { model: 'gemini-2.0-flash' },
+  { model: 'gemini-3.6-flash' },
   { apiVersion: 'v1beta' }
 );
 
